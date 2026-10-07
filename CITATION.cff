@@ -1,0 +1,13 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "RelSz: a causal, patient-relative seizure detector for scalp EEG"
+type: software
+version: 0.2.0
+date-released: "2026-10-06"
+license: CC-BY-NC-4.0
+repository-code: "https://github.com/guhanvenkat10/relsz"
+authors:
+  - given-names: Guhan
+    family-names: Venkat
+    affiliation: Independent
+    email: guhan.venkatachalapathi@gmail.com
