@@ -1,0 +1,40 @@
+name: Publish container image
+
+on:
+  workflow_dispatch:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    env:
+      REGISTRY_IMAGE: ghcr.io/${{ github.repository }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Read the package version
+        id: meta
+        run: echo "version=$(grep -m1 '^version' pyproject.toml | cut -d'"' -f2)" >> "$GITHUB_OUTPUT"
+
+      - name: Build the image
+        run: docker build -t "$REGISTRY_IMAGE:${{ steps.meta.outputs.version }}" .
+
+      - name: Check the output on the SzCORE test recordings (no network)
+        run: |
+          git clone --depth 1 https://github.com/esl-epfl/szcore.git /tmp/szcore
+          mkdir -m 777 /tmp/out
+          for f in unipolar bipolar; do
+            docker run --rm --network none -v /tmp/szcore/tests/data:/data -v /tmp/out:/output \
+              -e INPUT="$f.edf" -e OUTPUT="$f.tsv" "$REGISTRY_IMAGE:${{ steps.meta.outputs.version }}"
+            head -n1 "/tmp/out/$f.tsv" | grep -q -P '^onset\tduration\teventType\tconfidence\tchannels\tdateTime\trecordingDuration$'
+          done
+
+      - name: Push the image
+        run: |
+          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+          docker push "$REGISTRY_IMAGE:${{ steps.meta.outputs.version }}"
