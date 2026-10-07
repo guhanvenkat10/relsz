@@ -39,7 +39,7 @@ processing a stored recording gives the same output as processing it as a stream
 | Siena Scalp EEG Database (PhysioNet) | 14 adults, aged 20 to 71 years | 10-20 scalp EEG | training; selection of the alarm rule by cross-validation |
 | SeizeIT2 (OpenNeuro) | 125 patients with focal epilepsy | two behind-the-ear channels | training |
 | CHB-MIT Scalp EEG Database (PhysioNet), 7 patients | aged 3 to 14 years | bipolar scalp EEG | development (model selection); not used for training |
-| CHB-MIT Scalp EEG Database (PhysioNet), 16 patients | aged 1.5 to 22 years | bipolar scalp EEG | held-out evaluation; not used for training or development |
+| CHB-MIT Scalp EEG Database (PhysioNet), 16 patients | aged 1.5 to 22 years | bipolar scalp EEG | held-out evaluation; not used for training or tuning (see the notes under the results table) |
 
 No data from the Temple University Hospital EEG corpus were used. Each network was trained for 12,000 steps with
 AdamW (learning rate 0.001, one-cycle schedule, weight decay 0.01) on 60 s windows, alternating between batches from
